@@ -10,8 +10,6 @@ from fpdf import FPDF
 import base64
 import openai
 from collections import defaultdict
-
-import spacy
 import subprocess
 
 def download_spacy_model():
@@ -24,7 +22,7 @@ def download_spacy_model():
 # === Load Models ===
 @st.cache_resource
 def load_models():
-    return SentenceTransformer("all-MiniLM-L6-v2"), download_spacy_model()
+    return SentenceTransformer("all-MiniLM-L6-v2"), spacy.load("en_core_web_sm")
 
 sbert_model, nlp = load_models()
 
