@@ -11,10 +11,20 @@ import base64
 import openai
 from collections import defaultdict
 
+import spacy
+import subprocess
+
+def download_spacy_model():
+    try:
+        return spacy.load("en_core_web_sm")
+    except OSError:
+        subprocess.run(["python", "-m", "spacy", "download", "en_core_web_sm"])
+        return spacy.load("en_core_web_sm")
+
 # === Load Models ===
 @st.cache_resource
 def load_models():
-    return SentenceTransformer("all-MiniLM-L6-v2"), spacy.load("en_core_web_sm")
+    return SentenceTransformer("all-MiniLM-L6-v2"), download_spacy_model()
 
 sbert_model, nlp = load_models()
 
