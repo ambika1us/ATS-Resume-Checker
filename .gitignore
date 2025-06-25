@@ -1,0 +1,29 @@
+# === Streamlit ===
+.streamlit/secrets.toml
+
+# === Python ===
+__pycache__/
+*.py[cod]
+*.so
+
+# === Virtual Environments ===
+.venv/
+env/
+venv/
+
+# === Environment Variables ===
+.env
+*.env
+
+# === Jupyter Notebooks (if any) ===
+.ipynb_checkpoints/
+
+# === OS Junk ===
+.DS_Store
+Thumbs.db
+
+# === Logs & Outputs ===
+*.log
+*.pdf
+*.docx
+.cache/
