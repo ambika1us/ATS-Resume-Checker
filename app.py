@@ -59,21 +59,40 @@ keyword_categories = {
 
 # === Utility Functions ===
 def extract_text(file):
-    if file.name.endswith(".pdf"):
-        try:
-            doc = fitz.open(stream=file.read(), filetype="pdf")
+    filename = file.name.lower()
 
-            return " ".join([page.get_text() for page in doc])
+    if filename.endswith(".pdf"):
+        try:
+            # Load and extract only actual text from the PDF (skips images implicitly)
+            doc = fitz.open(stream=file.read(), filetype="pdf")
+            text = " ".join([page.get_text("text") for page in doc])  # Avoids OCR/image-based reading
+            if not text.strip():
+                st.warning("✅ PDF uploaded, but no readable text found (may be image-based).")
+                st.stop()
+            return text
         except Exception as e:
             st.error("❌ Failed to read PDF. Please upload a valid file.")
-            st.write(f"File size: {file.size / 1024:.2f} KB")
-            st.write(f"File type: {file.type}")
+            st.write(f"📎 File size: {file.size / 1024:.2f} KB")
+            st.write(f"📄 File type: {file.type}")
             st.write(f"💥 Error: {e}")
-
             st.stop()
-    elif file.name.endswith(".docx"):
-        return docx2txt.process(file)
+
+    elif filename.endswith(".docx"):
+        try:
+            # This extracts only text — images inside DOCX are not included
+            text = docx2txt.process(file)
+            if not text.strip():
+                st.warning("✅ DOCX uploaded, but no text content found (may contain only images).")
+                st.stop()
+            return text
+        except Exception as e:
+            st.error("❌ Failed to read Word file. Please upload a valid .docx file.")
+            st.write(f"💥 Error: {e}")
+            st.stop()
+
+    st.error("⚠️ Unsupported file format.")
     return ""
+
 
 def extract_keywords(text):
     doc = nlp(text.lower())
