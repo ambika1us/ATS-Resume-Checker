@@ -15,6 +15,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from openai import OpenAI
 from openai import RateLimitError
+import spacy.cli
 
 
 # === App Config ===
@@ -29,7 +30,10 @@ client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 @st.cache_resource
 def load_models():
     try:
+
+        spacy.cli.download("en_core_web_sm")
         return SentenceTransformer("all-MiniLM-L6-v2"), spacy.load("en_core_web_sm")
+
     except OSError:
         subprocess.run(["python", "-m", "spacy", "download", "en_core_web_sm"])
         return SentenceTransformer("all-MiniLM-L6-v2"), spacy.load("en_core_web_sm")
