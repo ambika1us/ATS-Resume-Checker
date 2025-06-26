@@ -1,4 +1,4 @@
-# ATS-Resume-Checker App
+# ATS Resume Matcher App
 
 An intelligent resume matcher that compares your resume to a job description using both strict and semantic keyword extraction. Features include:
 
