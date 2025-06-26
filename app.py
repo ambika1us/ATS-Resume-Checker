@@ -32,6 +32,7 @@ def load_models():
     try:
 
         spacy.cli.download("en_core_web_sm")
+        nlp = spacy.load("en_core_web_sm")
         return SentenceTransformer("all-MiniLM-L6-v2"), spacy.load("en_core_web_sm")
 
     except OSError:
