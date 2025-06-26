@@ -6,3 +6,4 @@ PyMuPDF
 sentence-transformers
 fpdf
 openai
+en-core-web-sm

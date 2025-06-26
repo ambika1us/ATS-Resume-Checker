@@ -2,7 +2,8 @@
 
 import os
 import base64
-import subprocess
+import en_core_web_sm
+
 import streamlit as st
 import docx2txt
 import fitz  # PyMuPDF
@@ -31,8 +32,9 @@ client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 def load_models():
     try:
 
-        spacy.cli.download("en_core_web_sm")
-        nlp = spacy.load("en_core_web_sm")
+        
+        nlp = en_core_web_sm.load()
+
         return SentenceTransformer("all-MiniLM-L6-v2"), spacy.load("en_core_web_sm")
 
     except OSError:
