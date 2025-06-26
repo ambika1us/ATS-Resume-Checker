@@ -2,8 +2,7 @@
 
 import os
 import base64
-import en_core_web_sm
-
+import subprocess
 import streamlit as st
 import docx2txt
 import fitz  # PyMuPDF
@@ -32,9 +31,8 @@ client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 def load_models():
     try:
 
-        
-        nlp = en_core_web_sm.load()
-
+        spacy.cli.download("en_core_web_sm")
+        nlp = spacy.load("en_core_web_sm")
         return SentenceTransformer("all-MiniLM-L6-v2"), spacy.load("en_core_web_sm")
 
     except OSError:
@@ -62,8 +60,17 @@ keyword_categories = {
 # === Utility Functions ===
 def extract_text(file):
     if file.name.endswith(".pdf"):
-        doc = fitz.open(stream=file.read(), filetype="pdf")
-        return " ".join([page.get_text() for page in doc])
+        try:
+            doc = fitz.open(stream=file.read(), filetype="pdf")
+
+            return " ".join([page.get_text() for page in doc])
+        except Exception as e:
+            st.error("❌ Failed to read PDF. Please upload a valid file.")
+            st.write(f"File size: {file.size / 1024:.2f} KB")
+            st.write(f"File type: {file.type}")
+            st.write(f"💥 Error: {e}")
+
+            st.stop()
     elif file.name.endswith(".docx"):
         return docx2txt.process(file)
     return ""
